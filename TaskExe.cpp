@@ -71,7 +71,7 @@ static const size_t
 pick_up_bucket (TaskManager &task_manager)
 {
   const size_t last_bucket_idx = task_manager.tasks.size () - 1;
-  const std::lock_guard<std::mutex> lock (std::ref (task_manager.buk_m));
+  const std::lock_guard<std::mutex> lock (task_manager.buk_m);
   const size_t buk_idx = task_manager.buk_to_process;
 
   // TODO (refactor) raise custom exception instead of the standard one.
@@ -87,7 +87,7 @@ static void
 complete_task (TaskManager &task_manager, const int success_cnt,
                const int error_cnt)
 {
-  const std::lock_guard<std::mutex> lock (std::ref (task_manager.cv_m));
+  const std::lock_guard<std::mutex> lock (task_manager.cv_m);
   auto processed_cnt = success_cnt + error_cnt;
   task_manager.decrement_tasks (processed_cnt);
   task_manager.cv.notify_one ();

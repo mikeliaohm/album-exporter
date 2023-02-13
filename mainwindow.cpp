@@ -223,7 +223,7 @@ update_progress (TaskManager &task_manager)
   do
     {
       std::cout << "awaiting tasks to be processed..." << std::endl;
-      std::unique_lock<std::mutex> cv_m (std::ref (task_manager.cv_m));
+      std::unique_lock<std::mutex> cv_m (task_manager.cv_m);
       auto &ready = task_manager.ready;
       task_manager.cv.wait (cv_m, [&ready] { return ready; });
       task_manager.update_progress ();

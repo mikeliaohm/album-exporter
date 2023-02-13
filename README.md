@@ -14,6 +14,32 @@ Since the project is built using Qt Framework, to build the project on your own 
 
 Qt has its own licenses. Check [Qt Licensing](https://www.qt.io/licensing/) for more information.
 
+### Build from the command line
+
+The easiest way to build the app for testing is using Qt Creator. However, you could instead build the project using cmake through the command line with proper arguments. Here are two versions of shell commands that work for me. In the 2nd version, you could generate Makefiles using ninja as suggested in the Qt documentation.
+
+**sample script 1**
+
+```bash
+# the default cmake version in my machine is 3.18
+/usr/local/Cellar/cmake/3.18.3/bin/cmake -S . -B 'build/' '-DCMAKE_GENERATOR:STRING=Unix Makefiles' -DCMAKE_BUILD_TYPE:STRING=Debug -DQT_QMAKE_EXECUTABLE:FILEPATH= -DCMAKE_PREFIX_PATH:PATH= -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/clang -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++
+# Build
+/usr/local/Cellar/cmake/3.18.3/bin/cmake --build build/ --target all
+# Package the app (you can remove -verbose=3)
+macdeployqt album-exporter.app -verbose=3  -always-overwrite -dmg
+```
+
+**sample script 2 - using ninja**
+
+```bash
+# There seems to be an issue if trying to build platform "x86_64;arm64"
+/Users/mikeliao/Qt/Tools/CMake/CMake.app/Contents/bin/cmake -S . -B 'build/' -DCMAKE_BUILD_TYPE:STRING=Debug -DQT_QMAKE_EXECUTABLE:FILEPATH= -DCMAKE_PREFIX_PATH:PATH= -DCMAKE_C_COMPILER:FILEPATH=/usr/bin/clang -DCMAKE_CXX_COMPILER:FILEPATH=/usr/bin/clang++ -DCMAKE_OSX_ARCHITECTURES="x86_64" -G Ninja
+# Build with ninja
+cd build && ninja
+# Package the app (you can remove -verbose=3)
+macdeployqt album-exporter.app -verbose=3  -always-overwrite -dmg
+```
+
 ## Features
 
 - Preview the media file by hitting the space key (similar to the feature in MacOS' finder)
